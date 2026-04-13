@@ -1,0 +1,102 @@
+.app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.app-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.app-subtitle {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.app-main {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: none;
+  border: none;
+  color: #c62828;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.error-message button:hover {
+  color: #b71c1c;
+}
+
+.app-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #666;
+}
+
+.refresh-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.refresh-btn:hover {
+  background: #388e3c;
+}
+
+@media (max-width: 600px) {
+  .app {
+    padding: 10px;
+  }
+
+  .app-main {
+    padding: 20px;
+  }
+
+  .app-footer {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf frontend/public frontend/src)",
+      "Bash(npx create-react-app:*)",
+      "Bash(python app.py)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(npm start:*)"
+    ]
+  }
+}

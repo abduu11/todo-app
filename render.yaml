@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: todoapp
+    env: python
+    buildCommand: |
+      echo "📦 Installation des dépendances Python..."
+      pip install -r backend/requirements.txt
+      echo "📦 Installation des dépendances Node.js..."
+      cd frontend && npm install
+      echo "🏗️  Build de l'application React..."
+      npm run build
+      echo "✅ Build terminé"
+    startCommand: gunicorn backend.app:create_app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: todoapp-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /api/todos
+    autoDeploy: true
+
+databases:
+  - name: todoapp-db
+    databaseName: todoapp
+    plan: free
