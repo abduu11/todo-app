@@ -2,6 +2,8 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+import threading
+import time
 
 # Charger les variables d'environnement
 load_dotenv()
@@ -47,6 +49,19 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
+
+    # Lancer le scheduler de notifications dans un thread séparé
+    from mail_service import check_and_notify
+
+    def notification_loop():
+        time.sleep(10)  # Attendre que Flask soit prêt
+        while True:
+            check_and_notify(app)
+            time.sleep(3600)  # Vérifier toutes les heures
+
+    thread = threading.Thread(target=notification_loop, daemon=True)
+    thread.start()
+
     port = int(os.environ.get('PORT', 5000))
     debug = os.getenv('FLASK_ENV') != 'production'
-    app.run(host='0.0.0.0', port=port, debug=debug)
+    app.run(host='0.0.0.0', port=port, debug=debug, use_reloader=False)
