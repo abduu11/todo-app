@@ -110,19 +110,20 @@ def init_routes(app):
     def test_mail():
         """Route de test pour vérifier l'envoi d'email"""
         from mail_service import send_deadline_email
-        from datetime import datetime, timedelta
 
-        # Créer une todo fictive pour le test
         class FakeTodo:
             title = "Tâche de test"
             priority = "high"
             deadline = datetime.utcnow() + timedelta(hours=12)
             def is_overdue(self): return False
 
-        success = send_deadline_email([FakeTodo()])
-        if success:
-            return jsonify({'status': 'Email envoyé avec succès'})
-        return jsonify({'status': 'Échec envoi email'}), 500
+        try:
+            success = send_deadline_email([FakeTodo()])
+            if success:
+                return jsonify({'status': 'Email envoyé avec succès'})
+            return jsonify({'status': 'Échec envoi email'}), 500
+        except Exception as e:
+            return jsonify({'status': 'Erreur', 'detail': str(e)}), 500
 
     @app.route('/api/todos/upcoming', methods=['GET'])
     def get_upcoming_todos():

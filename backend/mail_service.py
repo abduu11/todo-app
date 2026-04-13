@@ -49,8 +49,8 @@ def send_deadline_email(todos):
         print(f"Email envoyé à {recipient}")
         return True
     except Exception as e:
-        print(f"Erreur envoi email: {e}")
-        return False
+        print(f"Erreur envoi email: {type(e).__name__}: {e}")
+        raise e
 
 
 def check_and_notify(app):
