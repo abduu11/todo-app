@@ -65,14 +65,18 @@ function AddTodo({ onAdd }) {
           <option value="medium">Moyenne</option>
           <option value="high">Haute</option>
         </select>
-        <input
-          type="date"
-          className="deadline-input"
-          value={deadline}
-          onChange={(e) => setDeadline(e.target.value)}
-          disabled={isSubmitting}
-          min={new Date().toISOString().split('T')[0]}
-        />
+        <div className="deadline-wrapper">
+          <label className="deadline-label" htmlFor="deadline-input">📅 Deadline</label>
+          <input
+            id="deadline-input"
+            type="date"
+            className="deadline-input"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            disabled={isSubmitting}
+            min={new Date().toISOString().split('T')[0]}
+          />
+        </div>
         <button
           type="submit"
           className="add-btn"

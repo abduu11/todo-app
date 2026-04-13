@@ -45,6 +45,18 @@
   cursor: not-allowed;
 }
 
+.deadline-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deadline-label {
+  font-size: 0.8rem;
+  color: #666;
+  display: none;
+}
+
 .deadline-input {
   padding: 15px 10px;
   font-size: 1rem;
@@ -111,6 +123,10 @@
   .form-group {
     flex-direction: column;
     gap: 8px;
+  }
+
+  .deadline-label {
+    display: block;
   }
 
   .todo-input,
