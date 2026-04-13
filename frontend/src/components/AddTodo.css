@@ -5,6 +5,7 @@
 .form-group {
   display: flex;
   gap: 10px;
+  align-items: center;
 }
 
 .todo-input {
@@ -20,6 +21,50 @@
 .todo-input:focus {
   border-color: #4caf50;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.priority-select {
+  padding: 15px 10px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.priority-select:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.priority-select:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.deadline-input {
+  padding: 15px 10px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 160px;
+}
+
+.deadline-input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.deadline-input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
 }
 
 .todo-input:disabled {
@@ -65,14 +110,20 @@
 @media (max-width: 600px) {
   .form-group {
     flex-direction: column;
+    gap: 8px;
   }
 
-  .todo-input {
+  .todo-input,
+  .priority-select,
+  .deadline-input {
     padding: 12px 15px;
+    width: 100%;
+    min-width: auto;
   }
 
   .add-btn {
     padding: 12px 20px;
     width: 100%;
+    margin-top: 5px;
   }
 }

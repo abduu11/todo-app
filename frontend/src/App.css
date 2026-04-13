@@ -85,6 +85,21 @@
   background: #388e3c;
 }
 
+/* Styles pour les statistiques */
+.stat-warning {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.stat-highlight {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.app-footer p {
+  font-size: 0.9rem;
+}
+
 @media (max-width: 600px) {
   .app {
     padding: 10px;
@@ -98,5 +113,10 @@
     flex-direction: column;
     gap: 10px;
     text-align: center;
+  }
+
+  .app-footer p {
+    font-size: 0.8rem;
+    line-height: 1.4;
   }
 }

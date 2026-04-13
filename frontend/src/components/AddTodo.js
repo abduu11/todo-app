@@ -3,6 +3,8 @@ import './AddTodo.css';
 
 function AddTodo({ onAdd }) {
   const [title, setTitle] = useState('');
+  const [priority, setPriority] = useState('medium');
+  const [deadline, setDeadline] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -14,8 +16,18 @@ function AddTodo({ onAdd }) {
 
     setIsSubmitting(true);
     try {
-      await onAdd(title.trim());
+      // Convertir la deadline en format ISO si fournie
+      let deadlineISO = null;
+      if (deadline) {
+        const date = new Date(deadline);
+        date.setHours(23, 59, 59, 999); // Fin de journée
+        deadlineISO = date.toISOString();
+      }
+
+      await onAdd(title.trim(), priority, deadlineISO);
       setTitle('');
+      setPriority('medium');
+      setDeadline('');
     } catch (err) {
       console.error('Erreur lors de l\'ajout:', err);
     } finally {
@@ -43,6 +55,24 @@ function AddTodo({ onAdd }) {
           disabled={isSubmitting}
           autoFocus
         />
+        <select
+          className="priority-select"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+          disabled={isSubmitting}
+        >
+          <option value="low">Faible</option>
+          <option value="medium">Moyenne</option>
+          <option value="high">Haute</option>
+        </select>
+        <input
+          type="date"
+          className="deadline-input"
+          value={deadline}
+          onChange={(e) => setDeadline(e.target.value)}
+          disabled={isSubmitting}
+          min={new Date().toISOString().split('T')[0]}
+        />
         <button
           type="submit"
           className="add-btn"
@@ -55,6 +85,7 @@ function AddTodo({ onAdd }) {
       {title.trim() && (
         <div className="input-hint">
           Appuyez sur Entrée pour ajouter • {title.trim().length}/200 caractères
+          {deadline && ` • Deadline: ${new Date(deadline).toLocaleDateString('fr-FR')}`}
         </div>
       )}
     </form>

@@ -34,14 +34,14 @@ function App() {
     }
   };
 
-  const handleAddTodo = async (title) => {
+  const handleAddTodo = async (title, priority = 'medium', deadline = null) => {
     try {
       const response = await fetch(`${API_BASE}/api/todos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ title }),
+        body: JSON.stringify({ title, priority, deadline }),
       });
 
       if (!response.ok) {
@@ -117,6 +117,10 @@ function App() {
     }
   };
 
+  // Statistiques supplémentaires
+  const overdueCount = todos.filter(t => t.is_overdue && !t.completed).length;
+  const highPriorityCount = todos.filter(t => t.priority === 'high' && !t.completed).length;
+
   return (
     <div className="app">
       <header className="app-header">
@@ -148,7 +152,9 @@ function App() {
         <div className="app-footer">
           <p>Total: {todos.length} tâche(s) |
             Complétées: {todos.filter(t => t.completed).length} |
-            Actives: {todos.filter(t => !t.completed).length}
+            Actives: {todos.filter(t => !t.completed).length} |
+            En retard: <span className={overdueCount > 0 ? 'stat-warning' : ''}>{overdueCount}</span> |
+            Haute priorité: <span className={highPriorityCount > 0 ? 'stat-highlight' : ''}>{highPriorityCount}</span>
           </p>
           <button onClick={fetchTodos} className="refresh-btn">
             Actualiser
