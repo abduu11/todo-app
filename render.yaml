@@ -25,6 +25,42 @@ services:
     healthCheckPath: /api/todos
     autoDeploy: true
 
+  - type: cron
+    name: todoapp-notifications
+    schedule: "0 */6 * * *"  # Toutes les 6 heures
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python backend/notifications.py
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: todoapp-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      # Configuration SMTP (Gmail)
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false  # À définir manuellement dans le dashboard Render
+      - key: SMTP_PASSWORD
+        sync: false  # À définir manuellement
+      - key: EMAIL_FROM
+        sync: false  # Optionnel, utilise SMTP_USER par défaut
+      - key: EMAIL_TO
+        sync: false  # Optionnel, utilise SMTP_USER par défaut
+      - key: APP_URL
+        fromService:
+          name: todoapp
+          type: web
+          property: hostname
+      - key: DRY_RUN
+        value: false
+
 databases:
   - name: todoapp-db
     databaseName: todoapp

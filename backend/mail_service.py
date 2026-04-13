@@ -1,22 +1,18 @@
-import smtplib
 import os
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import resend
 from datetime import datetime, timedelta
 from models import Todo
 
 
 def send_deadline_email(todos):
-    """Envoyer un email de rappel pour les todos avec deadline proche"""
-    sender = os.getenv('MAIL_SENDER')
-    password = os.getenv('MAIL_PASSWORD')
+    """Envoyer un email de rappel via Resend"""
+    resend.api_key = os.getenv('RESEND_API_KEY')
     recipient = os.getenv('MAIL_RECIPIENT')
 
-    if not all([sender, password, recipient]):
-        print("Variables d'environnement mail manquantes")
+    if not resend.api_key or not recipient:
+        print("Variables d'environnement Resend manquantes")
         return False
 
-    # Construire le contenu de l'email
     overdue = [t for t in todos if t.is_overdue()]
     upcoming = [t for t in todos if not t.is_overdue()]
 
@@ -36,21 +32,16 @@ def send_deadline_email(todos):
             body += f"<li><b>{t.title}</b> - Priorité: {t.priority} - Deadline: {t.deadline.strftime('%d/%m/%Y')}</li>"
         body += "</ul>"
 
-    msg = MIMEMultipart('alternative')
-    msg['Subject'] = subject
-    msg['From'] = sender
-    msg['To'] = recipient
-    msg.attach(MIMEText(body, 'html'))
+    params = {
+        "from": "onboarding@resend.dev",
+        "to": [recipient],
+        "subject": subject,
+        "html": body,
+    }
 
-    try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            server.login(sender, password)
-            server.sendmail(sender, recipient, msg.as_string())
-        print(f"Email envoyé à {recipient}")
-        return True
-    except Exception as e:
-        print(f"Erreur envoi email: {type(e).__name__}: {e}")
-        raise e
+    response = resend.Emails.send(params)
+    print(f"Email envoyé: {response}")
+    return True
 
 
 def check_and_notify(app):
