@@ -124,8 +124,8 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>TodoApp</h1>
-        <p className="app-subtitle">Gestionnaire de tâches avec Flask et React</p>
+        <h1>ABDU BOUL FATTER!!!</h1>
+        <p className="app-subtitle">you can do all things believe in GOD!!</p>
       </header>
 
       <main className="app-main">

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import './AddTodo.css';
 
+const PRIORITY_OPTIONS = [
+  { value: 'high',   label: '🔴 Haute',   desc: 'Urgent, à faire maintenant' },
+  { value: 'medium', label: '🟠 Moyenne', desc: 'Important, à faire bientôt' },
+  { value: 'low',    label: '🟢 Faible',  desc: 'Peut attendre' },
+];
+
 function AddTodo({ onAdd }) {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('medium');
@@ -9,21 +15,16 @@ function AddTodo({ onAdd }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!title.trim() || isSubmitting) {
-      return;
-    }
+    if (!title.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
     try {
-      // Convertir la deadline en format ISO si fournie
       let deadlineISO = null;
       if (deadline) {
         const date = new Date(deadline);
-        date.setHours(23, 59, 59, 999); // Fin de journée
+        date.setHours(23, 59, 59, 999);
         deadlineISO = date.toISOString();
       }
-
       await onAdd(title.trim(), priority, deadlineISO);
       setTitle('');
       setPriority('medium');
@@ -35,38 +36,41 @@ function AddTodo({ onAdd }) {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
-    }
-  };
+  const selectedPriority = PRIORITY_OPTIONS.find(p => p.value === priority);
 
   return (
     <form className="add-todo-form" onSubmit={handleSubmit}>
-      <div className="form-group">
+      <div className="form-title-row">
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={handleKeyDown}
           placeholder="Quelle est votre prochaine tâche ?"
           className="todo-input"
           disabled={isSubmitting}
           autoFocus
+          maxLength={200}
         />
-        <select
-          className="priority-select"
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-          disabled={isSubmitting}
-        >
-          <option value="low">Faible</option>
-          <option value="medium">Moyenne</option>
-          <option value="high">Haute</option>
-        </select>
-        <div className="deadline-wrapper">
-          <label className="deadline-label" htmlFor="deadline-input">📅 Deadline</label>
+      </div>
+
+      <div className="form-options-row">
+        <div className="field-group">
+          <label className="field-label">⚡ Priorité</label>
+          <select
+            className={`priority-select priority-select--${priority}`}
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            disabled={isSubmitting}
+          >
+            {PRIORITY_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+          <span className="field-hint">{selectedPriority.desc}</span>
+        </div>
+
+        <div className="field-group">
+          <label className="field-label" htmlFor="deadline-input">📅 Date limite</label>
           <input
             id="deadline-input"
             type="date"
@@ -76,22 +80,21 @@ function AddTodo({ onAdd }) {
             disabled={isSubmitting}
             min={new Date().toISOString().split('T')[0]}
           />
+          <span className="field-hint">
+            {deadline
+              ? `Deadline : ${new Date(deadline).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
+              : 'Optionnel'}
+          </span>
         </div>
+
         <button
           type="submit"
           className="add-btn"
           disabled={!title.trim() || isSubmitting}
         >
-          {isSubmitting ? 'Ajout...' : 'Ajouter'}
+          {isSubmitting ? '...' : '+ Ajouter'}
         </button>
       </div>
-
-      {title.trim() && (
-        <div className="input-hint">
-          Appuyez sur Entrée pour ajouter • {title.trim().length}/200 caractères
-          {deadline && ` • Deadline: ${new Date(deadline).toLocaleDateString('fr-FR')}`}
-        </div>
-      )}
     </form>
   );
 }

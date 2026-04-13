@@ -120,7 +120,7 @@ function TodoItem({ todo, onToggle, onDelete, onUpdate }) {
           {/* Badge de priorité */}
           {todo.priority && (
             <span className={`priority-badge ${priorityClass}`}>
-              {priorityLabel}
+              {todo.priority === 'high' ? '🔴' : todo.priority === 'medium' ? '🟠' : '🟢'} {priorityLabel}
             </span>
           )}
 
@@ -132,11 +132,10 @@ function TodoItem({ todo, onToggle, onDelete, onUpdate }) {
           )}
 
           {/* Date de création */}
-          <span className="todo-date">
-            {new Date(todo.created_at).toLocaleDateString('fr-FR', {
+          <span className="todo-date" title="Date de création">
+            Créé le {new Date(todo.created_at).toLocaleDateString('fr-FR', {
               day: 'numeric',
               month: 'short',
-              year: 'numeric'
             })}
           </span>
         </div>
