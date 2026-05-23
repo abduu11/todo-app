@@ -22,7 +22,6 @@ def create_app():
     db.init_app(app)
 
     # Configurer CORS pour permettre les requêtes depuis le frontend React
-    # En développement: localhost:3000, en production: toutes les origines ou domaine spécifique
     if os.getenv('FLASK_ENV') == 'production':
         CORS(app, resources={r"/api/*": {"origins": "*"}})
     else:
@@ -32,7 +31,7 @@ def create_app():
     from routes import init_routes
     init_routes(app)
 
-    # Créer les tables de la base de données
+    # Créer les tables de la base de données au démarrage
     with app.app_context():
         db.create_all()
 
@@ -45,23 +44,26 @@ def create_app():
             return send_from_directory(frontend_dir, path)
         return send_from_directory(frontend_dir, 'index.html')
 
-    return app
-
-if __name__ == '__main__':
-    app = create_app()
-
-    # Lancer le scheduler de notifications dans un thread séparé
+    # Lancer le scheduler de notifications de manière sécurisée pour la production
     from mail_service import check_and_notify
 
     def notification_loop():
-        time.sleep(10)  # Attendre que Flask soit prêt
+        time.sleep(30)  # Donne 30 secondes à Render pour valider le statut 'LIVE' de l'application
         while True:
-            check_and_notify(app)
+            try:
+                check_and_notify(app)
+            except Exception as e:
+                print(f"Erreur lors de l'exécution du service de notification: {e}")
             time.sleep(3600)  # Vérifier toutes les heures
 
     thread = threading.Thread(target=notification_loop, daemon=True)
     thread.start()
 
+    return app
+
+if __name__ == '__main__':
+    # Ce bloc est utilisé uniquement pour le développement local (python app.py)
+    app = create_app()
     port = int(os.environ.get('PORT', 5000))
     debug = os.getenv('FLASK_ENV') != 'production'
     app.run(host='0.0.0.0', port=port, debug=debug, use_reloader=False)
